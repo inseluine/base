@@ -1,0 +1,581 @@
+diff -ruN mini-blog-master/MiniBlogApplication.php
+mini-blog/MiniBlogApplication.php
+--- mini-blog-master/MiniBlogApplication.php	2015-03-23 14:05:39.817844334
++0900
++++ mini-blog/MiniBlogApplication.php	2015-04-02 11:30:18.249732053 +0900
+@@ -31,6 +31,8 @@
+                 => array('controller' => 'account'),
+             '/follow'
+                 => array('controller' => 'account', 'action' => 'follow'),
++            '/favorite'
++                => array('controller' => 'account', 'action' => 'favorite'),
+         );
+     }
+ 
+バイナリー・ファイルmini-blog-master/controllers/.AccountController.php.swpとmini-blog/controllers/.AccountController.php.swpは違います
+diff -ruN mini-blog-master/controllers/AccountController.php
+mini-blog/controllers/AccountController.php
+--- mini-blog-master/controllers/AccountController.php	2015-03-23
+14:05:39.815844307 +0900
++++ mini-blog/controllers/AccountController.php	2015-04-02 14:03:16.372735455
++0900
+@@ -22,6 +22,15 @@
+         ));
+     }
+ 
++    public function chpasswordAction()
++    {
++        return $this->render(array(
++            'user_name' => '',
++            'password'  => '',
++            '_token'    => $this->generateCsrfToken('account/chpassword'),
++        ));
++    }
++
+     public function registerAction()
+     {
+         if ($this->session->isAuthenticated()) {
+@@ -74,6 +83,44 @@
+         ), 'signup');
+     }
+ 
++    public function passwordregisterAction()
++    {
++        if (!$this->request->isPost()) {
++            $this->forward404();
++        }
++        $token = $this->request->getPost('_token');
++        if (!$this->checkCsrfToken('account/chpassword', $token)) {
++            return $this->redirect('/account/chpassword');
++        }
+***************************************************************
+否定は if (! $this->...
+（ミニブログが if (!$this-> をデフォとして作られてて合わせたのかもしれないけど）
+***************************************************************
++
++        $password = $this->request->getPost('password');
++        $confirmpassword = $this->request->getPost('confirmpassword');
++
++        $errors = array();
++
++        if ($password !== $confirmpassword) {
++           $errors[] = '確認パスワードと異なります';  
++        }
++        if (!strlen($password)) {
++            $errors[] = 'パスワードを入力してください';
++        } else if (4 > strlen($password) || strlen($password) > 30) {
++            $errors[] = 'パスワードは4 ～ 30 文字以内で入力してください';
++        }
++        if (count($errors) === 0) {
++            $user = $this->session->get('user');
++            $username = $user['user_name'];
++
++            $this->db_manager->get('User')->update($username, $password);
++            return $this->redirect('/');
++        }
+***************************************************************
+$username = $user['user_name']; は不要
+一時変数に入れなくても$user['user_name']で意味が通じる
+***************************************************************
++        return $this->render(array(
++            'user_name' => $user_name,
++            'password'  => $password,
++            'errors'    => $errors,
++            '_token'    => $this->generateCsrfToken('account/chpassword'),
++        ), 'chpassword');
+***************************************************************
+この$user_nameは定義されている？
+***************************************************************
++    }
++
+     public function indexAction()
+     {
+         $user = $this->session->get('user');
+@@ -192,4 +239,66 @@
+ 
+         return $this->redirect('/account');
+     }
++
++    public function favoriteAction()
++    {
++        if (!$this->request->isPost()) {
++            $this->forward404();
++        }
++
++        $favoriting_name = $this->request->getPost('favoriting_name');
++        $favoriting_status = $this->request->getPost('favoriting_status');
++        if (!$favoriting_name) {
++            $this->forward404();
++        }
+***************************************************************
+favorite で形容詞と名詞兼ねてるから favoriting はおかしい
+$favoriteName = $this->request->getPost('favorite_name');
+あたりが自然
+***************************************************************
++
++        $token = $this->request->getPost('_token');
++        if (!$this->checkCsrfToken('account/favorite', $token)) {
++            return $this->redirect('/user/' . $favoriting_name);
++        }
+***************************************************************
+トークンチェックはisPost()のすぐ後に入れたほうが流れとして自然
+POSTチェック => トークンチェック => 登録用のhiddenパラメータ取得
+***************************************************************
++        
++        $favorite_user = $this->db_manager->get('User')
++            ->fetchByUserName($favoriting_name);
++        if (!$favorite_user) {
++            $this->forward404();
++        }
++
++        $user = $this->session->get('user');
++
++        $favoriting_repository = $this->db_manager->get('Favoriting');
++
++        if ($user['id'] !== $favorite_user['id'] 
++            && !$favoriting_repository->isFavoriting($user['id'], $favorite_user['id'], $favoriting_status)
++        ) {
+***************************************************************
+条件が見辛い
+$user['id'] !== $favorite_user['id'] は isFavoriting にSQL条件として入れるべき
+
+WHERE user_id != favoriting_user_id
+***************************************************************
+そもそも $this->session->get('user'); がそこらじゅうに存在するから、
+親クラスに
+
+protected function getUser($param = '')
+{
+    $user = $this->session->get('user');
+    if ($param) return $user[$param];
+
+    return $user;
+}
+
+とか作ったほうがいい
+
+$user = $this->session->get('user');
+$user['id']
+って呼び出していたのが
+$this->getUser('id');
+になる
+※このままだとsessionが存在することが前提になるからログイン中にしか使えないようにするとか考慮は必要
+***************************************************************
++            $favoriting_repository->insert($user['id'], $favorite_user['id'],$favoriting_status);
++        }
++
++        return $this->redirect('/account');
++    }
++
++    public function everyoneAction()
++    {
++        $user = $this->session->get('user');
++        $tweets = $this->db_manager->get('Status')
++            ->fetchAllTweet($user['id']);
++        return $this->render(array(
++            'user_name' => '',
++            'password'  => '',
++            'tweets' => $tweets,
++            '_token'    => $this->generateCsrfToken('account/everyone'),
++        ));
+***************************************************************
+'user_name', 'password' はrenderに渡す必要ある？
+***************************************************************
++    }
++    
++    public function favoritelistAction()
++    {
++        $user = $this->session->get('user');
++        $favorites = $this->db_manager->get('Status')
++            ->fetchAllFavorite($user['id']);
++        return $this->render(array(
++            'user_name' => '',
++            'password'  => '',
++            'favorites' => $favorites,
++            '_token'    => $this->generateCsrfToken('account/favoritelist'),
++        ));
++    }
+ }
+diff -ruN mini-blog-master/controllers/StatusController.php
+mini-blog/controllers/StatusController.php
+--- mini-blog-master/controllers/StatusController.php	2015-03-23
+14:05:39.815844307 +0900
++++ mini-blog/controllers/StatusController.php	2015-04-02 11:23:59.615583028
++0900
+@@ -93,13 +93,31 @@
+     public function showAction($params)
+     {
+         $status = $this->db_manager->get('Status')
+-            ->fetchByIdAndUserName($params['id'], $params['user_name']);
+-
+-        if (!$status) {
++                        ->fetchByIdAndUserName($params['id'],
+$params['user_name']);
++        $user = $this->db_manager->get('User')
++            ->fetchByUserName($params['user_name']);
++        if(!$user){
+             $this->forward404();
+         }
+ 
+-        return $this->render(array('status' => $status));
++        $statuses = $this->db_manager->get('Status')
++            ->fetchAllByUserId($user['id']);
++
++        $favoriting = null;
++        if ($this->session->isAuthenticated()) {
++            $my = $this->session->get('user');
++            if ($my['id'] !== $user['id']) {
++                $favoriting = $this->db_manager->get('Favoriting')
++                    ->isFavoriting($my['id'], $user['id'], $params['id']);
++            }
++        }
++
++        return $this->render(array(
++            'user'          => $user,
++            'status'        => $status,
++            'favoriting'    => $favoriting,
++            '_token'        => $this->generateCsrfToken('account/favorite'),
++        ));
+     }
+ 
+     public function signinAction()
+@@ -110,6 +128,7 @@
+ 
+         return $this->render(array(
+             'user_name' => '',
++            'status'    => '',
+             'password'  => '',
+             '_token'    => $this->generateCsrfToken('account/signin'),
+         ));
+diff -ruN mini-blog-master/core/Application.php mini-blog/core/Application.php
+--- mini-blog-master/core/Application.php	2015-03-23 14:05:39.816844325
++0900
++++ mini-blog/core/Application.php	2015-04-01 18:24:56.918737561 +0900
+@@ -204,7 +204,6 @@
+     public function runAction($controller_name, $action, $params = array())
+     {
+         $controller_class = ucfirst($controller_name) . 'Controller';
+-
+         $controller = $this->findController($controller_class);
+         if ($controller === false) {
+             throw new HttpNotFoundException($controller_class . ' controller
+is not found.');
+@@ -229,7 +228,6 @@
+                 return false;
+             } else {
+                 require_once $controller_file;
+-
+                 if (!class_exists($controller_class)) {
+                     return false;
+                 }
+diff -ruN mini-blog-master/models/FavoritingRepository.php
+mini-blog/models/FavoritingRepository.php
+--- mini-blog-master/models/FavoritingRepository.php	1970-01-01
+09:00:00.000000000 +0900
++++ mini-blog/models/FavoritingRepository.php	2015-04-02 12:47:13.740826309
++0900
+@@ -0,0 +1,44 @@
++<?php
++
++/**
++ * StatusRepository.
++ *
++ * @author Katsuhiro Ogawa <fivestar@nequal.jp>
++ */
++class FavoritingRepository extends DbRepository
++{
++    public function insert($user_id, $favoriting_user_id,
+$favoriting_status_id) {
++        $now = new DateTime();
++        $sql = "INSERT INTO favoriting VALUES(:user_id, :favoriting_user_id,
+:favoriting_status_id, :created_at)";
++
++        $stmt = $this->execute($sql, array(
++            ':user_id'              => $user_id,
++            ':favoriting_user_id'   => $favoriting_user_id,
++            ':favoriting_status_id' => $favoriting_status_id,
++            ':created_at'           => $now->format('Y-m-d H:i:s'),
++        ));
++    }
++
++    public function isFavoriting($user_id, $favoriting_user_id, $favoriting_status_id)
++    {
++        $sql = "
++            SELECT COUNT(user_id) as count
++                FROM favoriting
++                WHERE user_id = :user_id
++                    AND favoriting_user_id = :favoriting_user_id
++                    AND favoriting_status_id = :favoriting_status_id
++        ";
++
++        $row = $this->fetch($sql, array(
++            ':user_id'      => $user_id,
++            ':favoriting_user_id' => $favoriting_user_id,
++            ':favoriting_status_id' => $favoriting_status_id,
++        ));
++
++        if ($row['count'] !== '0') {
++            return true;
++        }
++
++        return false;
++    }
++}
+diff -ruN mini-blog-master/models/StatusRepository.php
+mini-blog/models/StatusRepository.php
+--- mini-blog-master/models/StatusRepository.php	2015-03-23
+14:05:39.817844334 +0900
++++ mini-blog/models/StatusRepository.php	2015-04-02 14:05:32.264574740
++0900
+@@ -66,4 +66,30 @@
+             ':user_name' => $user_name,
+         ));
+     }
++
++    public function fetchAllTweet($user_id)
++    {
++        $sql = "
++            SELECT u.user_name, a.body, a.created_at, a.id
++            FROM status a
++                LEFT JOIN user u ON a.user_id = u.id
++            WHERE u.id != :id
++            ORDER BY a.created_at DESC;
++        ";
++
++
++        return $this->fetchAll($sql, array(
++            ':id'   => $user_id));
++    }
++
++    public function fetchAllFavorite($user_id)
++    {
++        $sql = "
++        select f.user_id as user_id, f.favoriting_user_id as favorite_id,
+u.user_name as favorite_user, f.favoriting_status_id as
+favorite_status_id,s.body as favorite_tweet, f.created_at from favoriting f
+left join user u on f.favoriting_user_id = u.id left join status s on
+f.favoriting_status_id = s.id  and f.favoriting_user_id = s.user_id where
+f.user_id = :user_id order by f.created_at
++        ";
+***************************************************************
+f.favoriting_user_id as favorite_id について、
+favorite_id だと user_id なのか status_id なのか迷うから
+favorite_user_id にしたほうがいい
+***************************************************************
++
++        return $this->fetchAll($sql, array(
++            ':user_id'  => $user_id));
++    }
++
+ }
+diff -ruN mini-blog-master/models/UserRepository.php
+mini-blog/models/UserRepository.php
+--- mini-blog-master/models/UserRepository.php	2015-03-23 14:05:39.817844334
++0900
++++ mini-blog/models/UserRepository.php	2015-03-23 17:49:56.657574191 +0900
+@@ -24,8 +24,25 @@
+         ));
+     }
+ 
+-    public function hashPassword($password)
++    public function update($user_name, $password)
+     {
++        $password = $this->hashPassword($password);
++        $now = new DateTime();
++
++        $sql = "
++            UPDATE user SET password = :password , created_at = :created_at
++            WHERE user_name = :user_name
++        ";
++
++        $stmt = $this->execute($sql, array(
++            ':user_name'  => $user_name,
++            ':password'   => $password,
++            ':created_at' => $now->format('Y-m-d H:i:s'),
++        ));
+***************************************************************
+$now = new DateTime();
+$now->format('Y-m-d H:i:s'),
+は
+date('Y-m-d H:i:s') のほうが変数が減ってみやすい
+***************************************************************
++    }
++
++    public function hashPassword($password)
++    {   
+         return sha1($password . 'SecretKey');
+     }
+ 
+@@ -59,4 +76,5 @@
+ 
+         return $this->fetchAll($sql, array(':user_id' => $user_id));
+     }
++
+ }
+バイナリー・ファイルmini-blog-master/views/account/.signup.php.swpとmini-blog/views/account/.signup.php.swpは違います
+diff -ruN mini-blog-master/views/account/chpassword.php
+mini-blog/views/account/chpassword.php
+--- mini-blog-master/views/account/chpassword.php	1970-01-01
+09:00:00.000000000 +0900
++++ mini-blog/views/account/chpassword.php	2015-03-23 18:40:57.660732730
++0900
+@@ -0,0 +1,19 @@
++<?php $this->setLayoutVar('title', 'パスワード変更') ?>
++
++<h2>パスワード変更</h2>
++
++<form action="<?php echo $base_url; ?>/account/passwordregister" method="post">
++    <input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>" />
++
++    <?php if (isset($errors) && count($errors) > 0): ?>
++    <?php echo $this->render('errors', array('errors' => $errors)); ?>
++    <?php endif; ?>
++
++    <?php echo $this->render('account/chpasswordinputs', array(
++        'password' => $password, 'confirmpassword' => $confirmpassowd,
++    )); ?>
++
++    <p>
++        <input type="submit" value="変更" />
++    </p>
++</form>
+diff -ruN mini-blog-master/views/account/chpasswordinputs.php
+mini-blog/views/account/chpasswordinputs.php
+--- mini-blog-master/views/account/chpasswordinputs.php	1970-01-01
+09:00:00.000000000 +0900
++++ mini-blog/views/account/chpasswordinputs.php	2015-03-23
+17:28:16.008099273 +0900
+@@ -0,0 +1,16 @@
++<table>
++    <tbody>
++        <tr>
++            <th>新規パスワード入力</th>
++            <td>
++                <input type="password" name="password" value="<?php echo $this->escape($password); ?>" />
++            </td>
++        </tr>
++        <tr>
++            <th>新規パスワード入力確認</th>
++            <td>
++                <input type="password" name="confirmpassword" value="<?php echo $this->escape($confirmpassword); ?>" />
++            </td>
++        </tr>
++    </tbody>
++</table>
+diff -ruN mini-blog-master/views/account/everyone.php
+mini-blog/views/account/everyone.php
+--- mini-blog-master/views/account/everyone.php	1970-01-01 09:00:00.000000000
++0900
++++ mini-blog/views/account/everyone.php	2015-04-01 12:31:17.041053501
++0900
+@@ -0,0 +1,19 @@
++<?php $this->setLayoutVar('title', 'みんなの発言') ?>
++
++<h2>みんなの発言</h2>
++
++<?php if (count($tweets) > 0): ?>
++<ul>
++    <?php foreach ($tweets as $tweet): ?>
++    <li>
++    <a href="<?php echo $base_url; ?>/user/<?php echo $this->escape($tweet['user_name']); ?>">
++            <?php echo $this->escape($tweet['user_name']); ?>
++    </a>
++            <?php echo $this->escape($tweet['body']); ?>
++    <a href="<?php echo $base_url; ?>/user/<?php echo $this->escape($tweet['user_name']);?>/status/<?php echo $this->escape($tweet['id']); ?>">
++            <?php echo $this->escape($tweet['created_at']); ?>
++    </a>
++    </li>
+***************************************************************
+HTMLだってインデントしたい<li><a>
+***************************************************************
++    <?php endforeach; ?>
++</ul>
++<?php endif; ?>
+diff -ruN mini-blog-master/views/account/favoritelist.php
+mini-blog/views/account/favoritelist.php
+--- mini-blog-master/views/account/favoritelist.php	1970-01-01
+09:00:00.000000000 +0900
++++ mini-blog/views/account/favoritelist.php	2015-04-02 13:08:14.577426534
++0900
+@@ -0,0 +1,19 @@
++<?php $this->setLayoutVar('title', 'お気に入り一覧') ?>
++
++<h2>お気に入り一覧</h2>
++
++<?php if (count($favorites) > 0): ?>
++<ul>
++    <?php foreach ($favorites as $favorite): ?>
++    <li>
++    <a href="<?php echo $base_url; ?>/user/<?php echo $this->escape($favorite['favorite_user']); ?>">
++            <?php echo $this->escape($favorite['favorite_user']); ?>
++    </a>
++            <?php echo $this->escape($favorite['favorite_tweet']); ?>
++    <a href="<?php echo $base_url; ?>/user/<?php echo $this->escape($favorite['favorite_user']);?>/status/<?php echo $this->escape($favorite['favorite_status_id']); ?>">
++                    <?php echo $this->escape($favorite['created_at']); ?>
++ 
++    </li>
++    <?php endforeach; ?>
++</ul>
++<?php endif; ?>
+diff -ruN mini-blog-master/views/account/index.php
+mini-blog/views/account/index.php
+--- mini-blog-master/views/account/index.php	2015-03-23 14:05:39.817844334
++0900
++++ mini-blog/views/account/index.php	2015-03-23 18:42:09.442737385 +0900
+@@ -16,6 +16,9 @@
+     <li>
+         <a href="<?php echo $base_url; ?>/account/signout">ログアウト</a>
+     </li>
++    <li>
++        <a href="<?php echo $base_url; ?>/account/chpassword">パスワード変更</a>
++    </li>
+ </ul>
+ 
+ <h3>フォロー中</h3>
+diff -ruN mini-blog-master/views/layout.php mini-blog/views/layout.php
+--- mini-blog-master/views/layout.php	2015-03-23 14:05:39.818844346 +0900
++++ mini-blog/views/layout.php	2015-04-02 11:29:24.385712202 +0900
+@@ -18,6 +18,8 @@
+             <?php if ($session->isAuthenticated()): ?>
+                 <a href="<?php echo $base_url; ?>/">ホーム</a>
+                 <a href="<?php echo $base_url; ?>/account">アカウント</a>
++                <a href="<?php echo $base_url; ?>/account/everyone">みんなの発言</a>
++                <a href="<?php echo $base_url; ?>/account/favoritelist">お気に入り一覧</a>
+             <?php else: ?>
+                 <a href="<?php echo $base_url;
+?>/account/signin">ログイン</a>
+                 <a href="<?php echo $base_url;
+?>/account/signup">アカウント登録</a>
+diff -ruN mini-blog-master/views/status/show.php
+mini-blog/views/status/show.php
+--- mini-blog-master/views/status/show.php	2015-03-23 14:05:39.818844346
++0900
++++ mini-blog/views/status/show.php	2015-04-02 11:27:21.483665040 +0900
+@@ -1,3 +1,16 @@
+ <?php $this->setLayoutVar('title', $status['user_name']) ?>
+-
+ <?php echo $this->render('status/status', array('status' => $status)); ?>
++
++<?php if (!is_null($favoriting)): ?>
++<?php if ($favoriting): ?>
++<p>お気に入りツイート</p>
++<?php else: ?>
++<form action="<?php echo $base_url; ?>/favorite" method="post">
++    <input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>" />
++    <input type="hidden" name="favoriting_name" value="<?php echo $this->escape($user['user_name']); ?>" />
++    <input type="hidden" name="favoriting_status" value="<?php echo $this->escape($status['id']); ?>" />
++    <input type="submit" value="お気に入りに追加"/>
++</form>
++<?php endif; ?>
++<?php endif; ?>
++
+diff -ruN mini-blog-master/web/index.php mini-blog/web/index.php
+--- mini-blog-master/web/index.php	2015-03-23 14:05:39.817844334 +0900
++++ mini-blog/web/index.php	2015-04-02 14:18:54.374068042 +0900
+@@ -1,5 +1,4 @@
+ <?php
+-
+ require '../bootstrap.php';
+ require '../MiniBlogApplication.php';
+ 
+

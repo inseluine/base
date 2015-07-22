@@ -1,0 +1,8 @@
+implode
+list
+range
+array_map
+preg_match_all
+explode
+array_slice
+array_search

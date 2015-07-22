@@ -1,0 +1,82 @@
+# yum update
+There was a problem importing one of the Python modules
+required to run yum. The error leading to this problem was:
+
+   /usr/local/curl/lib/libcurl.so.4: undefined symbol: SSL_CTX_set_srp_password
+
+Please install a package which provides this module, or
+verify that the module is installed correctly.
+
+It's possible that the above module doesn't match the
+current version of Python, which is:
+2.6.6 (r266:84292, Jul 10 2013, 22:48:45)
+[GCC 4.4.7 20120313 (Red Hat 4.4.7-3)]
+
+If you cannot solve this problem yourself, please go to
+the yum faq at:
+  http://yum.baseurl.org/wiki/Faq
+
+/usr/local/curl/lib/libcurl.so.4にSSL_CTX_set_srp_passwordが定義されていない
+python 周りが怪しいと思い /opt/local に pythonをinstall
+
+# ./configure --prefix=/opt/local
+# make
+# make altinstall
+
+が、ダメ
+
+#ldd /usr/local/curl/lib/libcurl.so.4
+        linux-vdso.so.1 =>  (0x00007fff9ebaa000)
+        libssl.so.1.0.0 => /usr/local/ssl/lib/libssl.so.1.0.0 (0x00007f91d5ba2000)
+        libcrypto.so.1.0.0 => /usr/local/ssl/lib/libcrypto.so.1.0.0 (0x00007f91d57ee000)
+        libz.so.1 => /lib/libz.so.1 (0x00007f91d55d8000)
+        librt.so.1 => /lib64/librt.so.1 (0x00007f91d53d0000)
+        libc.so.6 => /lib64/libc.so.6 (0x00007f91d503c000)
+        libdl.so.2 => /lib64/libdl.so.2 (0x00007f91d4e38000)
+        libpthread.so.0 => /lib64/libpthread.so.0 (0x00007f91d4c1b000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f91d6068000)
+#ldd /usr/lib64/libcurl.so.4
+        linux-vdso.so.1 =>  (0x00007fff561ff000)
+        libidn.so.11 => /lib64/libidn.so.11 (0x00007f0127fed000)
+        libldap-2.4.so.2 => /lib64/libldap-2.4.so.2 (0x00007f0127d9d000)
+        librt.so.1 => /lib64/librt.so.1 (0x00007f0127b95000)
+        libgssapi_krb5.so.2 => /lib64/libgssapi_krb5.so.2 (0x00007f0127951000)
+        libkrb5.so.3 => /lib64/libkrb5.so.3 (0x00007f012766b000)
+        libk5crypto.so.3 => /lib64/libk5crypto.so.3 (0x00007f012743e000)
+        libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00007f012723a000)
+        libz.so.1 => /lib/libz.so.1 (0x00007f0127024000)
+        libssl3.so => /usr/lib64/libssl3.so (0x00007f0126de4000)
+        libsmime3.so => /usr/lib64/libsmime3.so (0x00007f0126bb8000)
+        libnss3.so => /usr/lib64/libnss3.so (0x00007f0126879000)
+        libnssutil3.so => /usr/lib64/libnssutil3.so (0x00007f012664c000)
+        libplds4.so => /lib64/libplds4.so (0x00007f0126448000)
+        libplc4.so => /lib64/libplc4.so (0x00007f0126243000)
+        libnspr4.so => /lib64/libnspr4.so (0x00007f0126004000)
+        libpthread.so.0 => /lib64/libpthread.so.0 (0x00007f0125de7000)
+        libdl.so.2 => /lib64/libdl.so.2 (0x00007f0125be3000)
+        libssh2.so.1 => /usr/lib64/libssh2.so.1 (0x00007f01259ba000)
+        libc.so.6 => /lib64/libc.so.6 (0x00007f0125626000)
+        liblber-2.4.so.2 => /lib64/liblber-2.4.so.2 (0x00007f0125417000)
+        libresolv.so.2 => /lib64/libresolv.so.2 (0x00007f01251fc000)
+        libsasl2.so.2 => /usr/lib64/libsasl2.so.2 (0x00007f0124fe2000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f0128482000)
+        libkrb5support.so.0 => /lib64/libkrb5support.so.0 (0x00007f0124dd7000)
+        libkeyutils.so.1 => /lib64/libkeyutils.so.1 (0x00007f0124bd3000)
+        libssl.so.10 => /usr/lib64/libssl.so.10 (0x00007f0124967000)
+        libcrypto.so.10 => /usr/lib64/libcrypto.so.10 (0x00007f0124583000)
+        libcrypt.so.1 => /lib64/libcrypt.so.1 (0x00007f012434c000)
+        libselinux.so.1 => /lib64/libselinux.so.1 (0x00007f012412d000)
+        libfreebl3.so => /lib64/libfreebl3.so (0x00007f0123f29000)
+
+/usr/lib64/libcurl.so.4はいっぱいある様子なので、シンボリックリンク貼り直してみる
+
+# cd /usr/local/curl/lib; ls -la
+lrwxrwxrwx. 1 root root     16 Sep 28  2013 libcurl.so -> libcurl.so.4.3.0
+
+/usr/local/curl/lib/libcurl.so.4 は /usr/local/curl/lib/libcurl.so.4.3.0 にシンボリックリンクはられている様子
+
+/usr/lib64/libcurl.so.4へシンボリックリンク貼ってみた
+# unlink /usr/local/curl/lib/libcurl.so.4
+# ln -s /usr/local/curl/lib/libcurl.so.4 /usr/lib64/libcurl.so.4
+
+動いた！

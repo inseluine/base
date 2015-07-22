@@ -1,0 +1,1518 @@
+<?php
+//変数の前後に()をつけておく
+/*
+    $ipRegex1 = "[1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]";
+    $ipRegex2 = "($ipRegex1)|\*|\[($ipRegex1)\-($ipRegex1)\]";
+    $ipRegex3 = "(($ipRegex1)\.){2}($ipRegex2)\.($ipRegex2)";
+
+    echo preg_match("/($ipRegex3)/", getStdin());
+*/
+$c = new B004;
+$c->execute();
+
+class B004
+{
+    private $baseIp = array();
+    private $N;
+    private $Log = array();
+    private $Log2 = array();
+    private $logIp = array();
+
+    private $ipRegex = "[1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]";
+    private $ipRegex2 = "($ipRegex1)|\*|\[($ipRegex1)\-($ipRegex1)\]";
+    private $ipRegex3 = "(($ipRegex1)\.){2}($ipRegex2)\.($ipRegex2)";
+    
+
+    public function __construct()
+    {
+        $this->baseIp = explode('.',getStdin());    
+        $this->N = getStdin();
+    }
+
+    public function execute()
+    {
+        for ($i = 0; $i < $this->N; $i++)
+        {
+            $this->getLogIp(getStdin());
+        }
+    }
+
+    private function getLogIp($s)
+    {
+    //ログ１行分の先頭のIPAddrをオクテット毎に $this->logIpに配列格納
+        $ipAddr = substr($s, 0, strpos($s, ' '));
+        $this->logIp = explode('.', $ipAddr);
+    }
+
+    private function wildCheck()
+    {
+        if (preg_match("/($ipRegex)/"), $i) {
+            return $i;
+        }
+        if (preg_match("/\*/"), $i) {
+            return $i;
+        }
+        if (preg_match("/\[($ipRegex)\-($ipRegex)\]/"), $i) {
+            return $i;
+        }
+    }
+}
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+<?php
+function getAddr(&$ipAddr)
+{
+    $ipAddr = explode('.', trim(fgets(STDIN)));
+}
+
+function checkAddr($ipAddr)
+{
+    for($i = 0 
+    return true or false;
+getAddr($ipAddr);
+
+<?php
+$count = getStdin();
+$ipRegex = '[1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]';
+
+for($i = 0; $i < $count; $i++) {
+    echo (preg_match("/^(($ipRegex)\.){3}($ipRegex)$/", getStdin())) ? ('True') : ('False'), "\n";
+}
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+
+/*
+C005:アドレス調査
+
+<<問題>>
+あなたはあるソフトウェアの開発でIPアドレスを入力してもらう機能の一部を開発しています。
+入力は手入力で「.」と「数字」で構成された長さNの文字列が入力されます。
+
+入力されているIPアドレスが書式に合っているか判定して、合っていればTrue、
+違っていればFalseと標準出力で出力するプログラムを作成してください。
+
+判別すべきIPアドレスはIPv4で定義された範囲のIPアドレスとします。書式は以下のようになります。
+
+    .で区切られた10進数の4つの数で表されます。
+    数の範囲は0から255までとします。
+
+    例:
+    100.23.103.20
+    123.11.22.33
+    14.33.103.20
+    102.233.13.2
+
+
+<<入力>>
+    ・1行目には入力されるIPアドレスの数Mが入力されます。
+    ・2行目以降には「.」と「数字」のみで構成された長さNの文字列がM行入力されます。
+
+<<出力>>
+IPv4のアドレスとして正しいのならTrue,違う場合はFalseと改行区切りでM行出力してください。
+
+*/
+<?php
+//アドレス調査(function isIP)
+$count = getStdin();
+$ipRegex = '[1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]';
+
+for($i = 0; $i < $count; $i++) {
+    echo (isIP($ipRegex)) ? ('True') : ('False'), "\n";
+}
+
+function isIP($ipRegex)
+{
+    return preg_match("/^(($ipRegex)\.){3}($ipRegex)$/", getStdin());
+} 
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+
+/*
+C005:アドレス調査
+
+<<問題>>
+あなたはあるソフトウェアの開発でIPアドレスを入力してもらう機能の一部を開発しています。
+入力は手入力で「.」と「数字」で構成された長さNの文字列が入力されます。
+
+入力されているIPアドレスが書式に合っているか判定して、合っていればTrue、
+違っていればFalseと標準出力で出力するプログラムを作成してください。
+
+判別すべきIPアドレスはIPv4で定義された範囲のIPアドレスとします。書式は以下のようになります。
+
+    .で区切られた10進数の4つの数で表されます。
+    数の範囲は0から255までとします。
+
+    例:
+    100.23.103.20
+    123.11.22.33
+    14.33.103.20
+    102.233.13.2
+
+
+<<入力>>
+    ・1行目には入力されるIPアドレスの数Mが入力されます。
+    ・2行目以降には「.」と「数字」のみで構成された長さNの文字列がM行入力されます。
+
+<<出力>>
+IPv4のアドレスとして正しいのならTrue,違う場合はFalseと改行区切りでM行出力してください。
+
+*/
+<?php
+list($paramCnt, $userCnt, $rankCnt) = explode(' ', getStdin());
+$worthItem = explode(' ', getStdin());
+
+for($i = 0; $i < $userCnt; $i++) {
+    $worthUser[$i] = 0;
+    $itemCnt = explode(' ', getStdin());
+    for($j = 0 ; $j < $paramCnt; $j++) {
+        $worthUser[$i] += ($worthItem[$j] * $itemCnt[$j]);
+    }
+}
+
+for($i = 0; $i <$rankCnt; $i++) {
+    echo round(max($worthUser)), "\n";
+    $maxKey = array_search(max($worthUser),$worthUser);
+    unset($worthUser[$maxKey]);
+}
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+
+/*
+C006:ハイスコアランキング
+
+<<問題>>
+あなたはとあるアイテム集めゲームのユーザーランキングを作ることになりました。
+
+アイテムの種類はN個あり、アイテムは種類ごとに得点が異なります。
+各アイテム種別毎の1個あたりの得点はCiで表現され、ユーザーが持っている
+それぞのアイテムの数はXiで表現されます。
+（アイテムiの１個当たりの得点はCi、ユーザーの持ち数はXiという事です）
+
+ユーザーのスコアは、各アイテム持ち数×各アイテムの得点の総和となります。
+
+例）
+　アイテム種別毎の得点
+　　C1 = 1.5, C2 = 1.2, C3 = 2, C4 = 0.4
+
+　ユーザーのアイテム持ち数
+　　X1 = 49, X2 = 30, X3 = 2, X4 = 6486
+
+　上記の場合スコアS
+　　S = C1 * X1 + C2 * X2 + C3 * X3 + C4 * X4
+　　　= 49 * 1.5 + 1.2 * 30 + 2 * 2 + 0.4 * 6486
+　　　= 2707.9
+　　　≒ 2708
+　として算出します。
+
+Sの値が小数になった場合は、小数第一位を四捨五入し、整数に
+します。以上のスコア計算を、M人のユーザーに行い、トップKのスコア(Ｋ＝３の場合トップ３)を
+出力してください。
+
+<<入力>>
+一行目にパラメータNの個数, ユーザーの人数M, トップK がスペースで区切られています。
+二行目にN個のパラメータの各係数Ciがスペースで区切られています。
+三行目からM+2行目まで各ユーザーのXiの数値がスペースで区切られています。
+
+<<出力>>
+上位スコアから順番K番目までのスコアを改行(\n)して標準出力で出力してください。
+
+*/
+<?php
+//$paramCnt:アイテムの種類数 $userCnt:ユーザー数 $rankDispCnt:ランキング表示数
+list($itemCnt, $userCnt, $rankDispCnt) = explode(' ', getStdin());
+//$worthItem:各アイテムの価値 C1,C2,C3...
+$worthItem = explode(' ', getStdin());
+
+//UserScore[]に各ユーザーのスコアを格納
+for($i = 0; $i < $userCnt; $i++) {
+    $userScore[$i] = 0;
+    $userItemCnt = explode(' ', getStdin());
+    for($j = 0 ; $j < $itemCnt; $j++) {
+        $userScore[$i] += ($worthItem[$j] * $userItemCnt[$j]);
+    }
+    $userScore[$i] = round($userScore[$i]);
+}
+
+//arsortで$userScoreを逆順ソート
+arsort($userScore);
+//ランキング表示数だけarray_sliceで表示
+$userRank = array_slice($userScore, 0, $rankDispCnt);
+
+foreach ($userRank as $i) {
+    echo $i, "\n";
+}
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+
+/*
+C006:ハイスコアランキング
+
+<<問題>>
+あなたはとあるアイテム集めゲームのユーザーランキングを作ることになりました。
+
+アイテムの種類はN個あり、アイテムは種類ごとに得点が異なります。
+各アイテム種別毎の1個あたりの得点はCiで表現され、ユーザーが持っている
+それぞのアイテムの数はXiで表現されます。
+（アイテムiの１個当たりの得点はCi、ユーザーの持ち数はXiという事です）
+
+ユーザーのスコアは、各アイテム持ち数×各アイテムの得点の総和となります。
+
+例）
+　アイテム種別毎の得点
+　　C1 = 1.5, C2 = 1.2, C3 = 2, C4 = 0.4
+
+　ユーザーのアイテム持ち数
+　　X1 = 49, X2 = 30, X3 = 2, X4 = 6486
+
+　上記の場合スコアS
+　　S = C1 * X1 + C2 * X2 + C3 * X3 + C4 * X4
+　　　= 49 * 1.5 + 1.2 * 30 + 2 * 2 + 0.4 * 6486
+　　　= 2707.9
+　　　≒ 2708
+　として算出します。
+
+Sの値が小数になった場合は、小数第一位を四捨五入し、整数に
+します。以上のスコア計算を、M人のユーザーに行い、トップKのスコア(Ｋ＝３の場合トップ３)を
+出力してください。
+
+<<入力>>
+一行目にパラメータNの個数, ユーザーの人数M, トップK がスペースで区切られています。
+二行目にN個のパラメータの各係数Ciがスペースで区切られています。
+三行目からM+2行目まで各ユーザーのXiの数値がスペースで区切られています。
+
+<<出力>>
+上位スコアから順番K番目までのスコアを改行(\n)して標準出力で出力してください。
+
+*/
+<?php
+list($startTag, $endTag) = explode(' ', getStdin());
+$inputLine = getStdin();
+for ($startPosition = 0, $endPosition = 0; (strpos($inputLine, $startTag, $startPosition) !== FALSE) && (strpos($inputLine, $endTag, $endPosition) !== FALSE); $endPosition = $endPosition + strlen($endTag)) {
+    $startPosition = strpos($inputLine, $startTag, $startPosition) +  strlen($startTag);
+    $endPosition = strpos($inputLine, $endTag, $endPosition);
+    $extractionLen = $endPosition - $startPosition;
+    if ($extractionLen == 0) {
+        echo '<blank>', "\n";
+    } else {
+        echo substr($inputLine, $startPosition, $extractionLen), "\n";
+    }
+}
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+
+/*
+C008:文字列の抽出
+
+<<問題>>
+ あなたは、ある文字列から「与えられた仕様に沿って」文字列を抽出する、というお仕事をすることになりました。
+2つの異なったタグで囲まれた文字列を、与えられたテキストデータから抽出します。
+例えば
+
+    <abc> <xyz>#タグA、タグB 
+    hoge<abc>piyo<xyz>#テキストデータS 
+
+という入力がされた場合、
+
+    piyo
+
+と出力します。
+※ # 以降はコメントです。
+
+文字列を抽出する際の仕様は以下のように定義します。
+
+１行目の入力のスペースで区切られた文字列、タグA、タグBで囲まれた文字列を２行目の入力の文字列Sから抽出して出力します。
+タグAを開始タグ、タグBを終了タグとして考えます。
+それぞれのタグはタグ開始文字'<'とタグ終了文字'>'で囲まれた半角英数文字列です。開始タグと終了タグは同じ文字列になる事はありません。
+文字列Sは半角英数と<>のみです。
+
+文字列を抽出する手順は以下の通りです。
+
+① 文字列SからタグAを（左から）右に向かって検索する
+② ①で検索したタグA出現位置からタグBを（左から）右に向かって検索する
+③ 検索したタグA,Bに囲まれている文字列を抽出し出力する。また、抽出文字の長さが、0の場合、<blank>と出力する
+④ タグBの出現位置から再度タグAを検索し、存在すればタグA出現位置からタグBを検索し③の処理を行い、存在しなければ処理を終了する
+⑤ ④を繰り返す
+
+以下のような入れ子状の入力も入れ子を考慮せず上記仕様に沿って文字列を取り出します。
+
+入力例1
+    <abc> <xyz>
+    <abc>123<abc>456<xyz>789<xyz>
+
+出力例1
+    123<abc>456
+
+入力例2
+    <a> <b>
+    <a><a><b>
+
+出力例2
+    <a>
+
+<<入力>>
+1行目に半角スペースで区切られた2つのタグが入力されます。
+それぞれのタグはタグ開始文字'<'とタグ終了文字'>'で囲まれた半角英数文字列です。2つのタグは同じものは入力されません。
+2行目に抽出処理を行う文字列データが入力されます。必ず一組以上のタグが含まれます。
+
+それぞれの文字列は半角英数字とタグを表す<と>のみとします。<と>はタグ以外では出現しないものとします。
+入力値最終行の末尾に改行が１つ入ります。
+
+<<出力>>
+タグで囲まれた文字列を出現した順に改行して出力してください。
+もし、囲まれた文字列の長さが0の場合は<blank>という文字を出力してください。
+
+*/
+<?php
+list($startTag, $endTag) = explode(' ', getStdin());
+$inputLine = getStdin();
+
+preg_match_all("/$startTag(.*?)$endTag/", $inputLine, $matches, PREG_PATTERN_ORDER);
+
+foreach ($matches[1] as $i) {
+    if ($i == "") {
+        echo '<blank>', "\n";
+    } else {
+        echo "$i", "\n";
+    }
+}
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+
+/*
+C008:文字列の抽出
+
+<<問題>>
+ あなたは、ある文字列から「与えられた仕様に沿って」文字列を抽出する、というお仕事をすることになりました。
+2つの異なったタグで囲まれた文字列を、与えられたテキストデータから抽出します。
+例えば
+
+    <abc> <xyz>#タグA、タグB 
+    hoge<abc>piyo<xyz>#テキストデータS 
+
+という入力がされた場合、
+
+    piyo
+
+と出力します。
+※ # 以降はコメントです。
+
+文字列を抽出する際の仕様は以下のように定義します。
+
+１行目の入力のスペースで区切られた文字列、タグA、タグBで囲まれた文字列を２行目の入力の文字列Sから抽出して出力します。
+タグAを開始タグ、タグBを終了タグとして考えます。
+それぞれのタグはタグ開始文字'<'とタグ終了文字'>'で囲まれた半角英数文字列です。開始タグと終了タグは同じ文字列になる事はありません。
+文字列Sは半角英数と<>のみです。
+
+文字列を抽出する手順は以下の通りです。
+
+① 文字列SからタグAを（左から）右に向かって検索する
+② ①で検索したタグA出現位置からタグBを（左から）右に向かって検索する
+③ 検索したタグA,Bに囲まれている文字列を抽出し出力する。また、抽出文字の長さが、0の場合、<blank>と出力する
+④ タグBの出現位置から再度タグAを検索し、存在すればタグA出現位置からタグBを検索し③の処理を行い、存在しなければ処理を終了する
+⑤ ④を繰り返す
+
+以下のような入れ子状の入力も入れ子を考慮せず上記仕様に沿って文字列を取り出します。
+
+入力例1
+    <abc> <xyz>
+    <abc>123<abc>456<xyz>789<xyz>
+
+出力例1
+    123<abc>456
+
+入力例2
+    <a> <b>
+    <a><a><b>
+
+出力例2
+    <a>
+
+<<入力>>
+1行目に半角スペースで区切られた2つのタグが入力されます。
+それぞれのタグはタグ開始文字'<'とタグ終了文字'>'で囲まれた半角英数文字列です。2つのタグは同じものは入力されません。
+2行目に抽出処理を行う文字列データが入力されます。必ず一組以上のタグが含まれます。
+
+それぞれの文字列は半角英数字とタグを表す<と>のみとします。<と>はタグ以外では出現しないものとします。
+入力値最終行の末尾に改行が１つ入ります。
+
+<<出力>>
+タグで囲まれた文字列を出現した順に改行して出力してください。
+もし、囲まれた文字列の長さが0の場合は<blank>という文字を出力してください。
+
+*/
+<?php
+list($basePosX, $basePosY, $baseNoise) = explode(' ', getStdin());
+$relaxCnt = getStdin();
+for ($i = 0; $i < $relaxCnt; $i ++) {
+    $relaxPos[$i] = explode(' ', getStdin());
+}
+
+foreach ($relaxPos as $i) {
+    echo (noiseCheck($i[0], $i[1])) ? ('silent') : ('noisy'), "\n";
+}
+
+function noiseCheck($relaxPosX, $relaxPosY)
+{
+    global $basePosX, $basePosY, $baseNoise;
+    return (pow(($relaxPosX - $basePosX), 2) + pow(($relaxPosY - $basePosY), 2) >= pow($baseNoise ,2));
+}
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+
+/*
+<<問題>>
+公園内で読書をするため、工事現場の騒音が届かない場所を探す。
+工事現場は公園にただ一つだけあり、その位置は (a, b) です。
+工事現場から距離 R メートル未満は騒音が大きいので読書には適していません。
+また、公園には読書にうってつけの木陰が N 箇所あり、i 番目の木陰の位置は (x_i, y_i) です。
+
+以上の情報が与えられたとき、各木陰が読書に適している(つまり、工事現場から R メートル以上離れている)かどうかを判定するプログラムを書いてください。
+
+「位置 (x, y) が工事現場から R メートル以上離れている」という条件は以下の式で表されます。
+(x-a)^2 + (y-b)^2 <= R^2
+
+<<入力>>
+1 行目には 3 つの整数 a、b、R が入力されます。
+a、b はそれぞれ工事現場の位置の x 座標、y 座標を、R は工事現場の騒音の大きさを表します。
+2 行目には木陰の数を表す整数 N が入力されます。 続く N 行には各木陰の座標を表す 2 つの整数 x_i、y_i が入力されます。
+
+    a b R　　　#工事現場のx座標,工事現場のy座標,工事現場の騒音の大きさ
+    N　　　　　#木陰の数
+    x_1 y_1　　#木陰1のx座標,木陰1のy座標
+    x_2 y_2　　#木陰2のx座標,木陰2のy座標
+    ...
+    x_N y_N　　#木陰Nのx座標,木陰Nのy座標
+
+<<出力>>
+出力は N 行からなります。 N 個の木陰それぞれに対して、その木陰が読書に適している
+(つまり、工事現場から R メートル以上離れている)ならば "silent" と出力してください。
+その木陰が読書に適していないならば "noisy" と出力してください。
+
+
+*/
+<?php
+
+$c = new C010();
+$c->execute();
+$c->output();
+
+class C010 {
+    private $a;
+    private $b;
+    private $R;
+    private $posCount;
+    private $ans = array();
+
+    public function __construct()
+    {
+        list($this->a, $this->b, $this->R) = explode(' ', $this->stdin());
+        $this->posCount = $this->stdin();
+    }
+
+    public function execute()
+    {
+        for ($i = 0; $i < $this->posCount; $i++) {
+            list($x, $y) = explode(' ', $this->stdin());
+            $this->ans[] = ($this->inNoisyArea($x, $y)) ? ('noisy') : ('silent');
+        }
+    }
+
+    public function output()
+    {
+        echo implode("\n", $this->ans)."\n";
+    }
+
+    private function inNoisyArea($x, $y)
+    {
+       return (pow(($x - $this->a), 2) + pow(($y - $this->b), 2) < pow($this->R, 2));
+    }
+
+    private function stdin()
+    {
+        return trim(fgets(STDIN));
+    }
+
+}
+<?php
+class RelaxPos
+{
+    public $a,$b,$x,$y,$R;
+    public $result;
+}
+
+$relaxPos = new RelaxPos;
+
+list($relaxPos->x, $relaxPos->y, $relaxPos->R) = explode(' ', getStdin());
+$relaxCnt = getStdin();
+
+for ($i = 0; $i < $relaxCnt; $i ++) {
+    list($relaxPos->a[], $relaxPos->b[]) = explode(' ', getStdin());
+    $relaxPos->result[] = (pow(($relaxPos->a[$i] - $relaxPos->x), 2) + pow(($relaxPos->b[$i] - $relaxPos->y), 2) >= pow($relaxPos->R ,2)) ? 'silent' : 'noisy';
+}
+
+foreach ($relaxPos->result as $i) {
+    echo $i, "\n";
+}
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+
+/*
+<<問題>>
+公園内で読書をするため、工事現場の騒音が届かない場所を探す。
+工事現場は公園にただ一つだけあり、その位置は (a, b) です。
+工事現場から距離 R メートル未満は騒音が大きいので読書には適していません。
+また、公園には読書にうってつけの木陰が N 箇所あり、i 番目の木陰の位置は (x_i, y_i) です。
+
+以上の情報が与えられたとき、各木陰が読書に適している(つまり、工事現場から R メートル以上離れている)かどうかを判定するプログラムを書いてください。
+
+「位置 (x, y) が工事現場から R メートル以上離れている」という条件は以下の式で表されます。
+(x-a)^2 + (y-b)^2 <= R^2
+
+<<入力>>
+1 行目には 3 つの整数 a、b、R が入力されます。
+a、b はそれぞれ工事現場の位置の x 座標、y 座標を、R は工事現場の騒音の大きさを表します。
+2 行目には木陰の数を表す整数 N が入力されます。 続く N 行には各木陰の座標を表す 2 つの整数 x_i、y_i が入力されます。
+
+    a b R　　　#工事現場のx座標,工事現場のy座標,工事現場の騒音の大きさ
+    N　　　　　#木陰の数
+    x_1 y_1　　#木陰1のx座標,木陰1のy座標
+    x_2 y_2　　#木陰2のx座標,木陰2のy座標
+    ...
+    x_N y_N　　#木陰Nのx座標,木陰Nのy座標
+
+<<出力>>
+出力は N 行からなります。 N 個の木陰それぞれに対して、その木陰が読書に適している
+(つまり、工事現場から R メートル以上離れている)ならば "silent" と出力してください。
+その木陰が読書に適していないならば "noisy" と出力してください。
+
+
+*/
+<?php
+class RelaxPos
+{
+
+    public $a,$b;
+    public static $x,$y,$R;
+    public $result;
+
+    public function __construct()
+    {
+        list($this->a, $this->b) = explode(' ', getStdin());
+        $this->result = ((pow(($this->a - self::$x), 2) + pow(($this->b - self::$y), 2)) >= (pow(self::$R, 2))) ? 'silent' : 'noisy';
+    }
+}
+
+list(RelaxPos::$x, RelaxPos::$y, RelaxPos::$R) = explode(' ', getStdin());
+$relaxCnt = getStdin();
+
+for ($i = 0; $i < $relaxCnt; $i++) {
+    $name = 'relaxPos' . $i;
+    $$name = new RelaxPos;
+}
+
+for ($i = 0; $i < $relaxCnt; $i++) {
+    $name = 'relaxPos' . $i;
+    echo $$name->result, "\n";
+}
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+
+/*
+<<問題>>
+公園内で読書をするため、工事現場の騒音が届かない場所を探す。
+工事現場は公園にただ一つだけあり、その位置は (a, b) です。
+工事現場から距離 R メートル未満は騒音が大きいので読書には適していません。
+また、公園には読書にうってつけの木陰が N 箇所あり、i 番目の木陰の位置は (x_i, y_i) です。
+
+以上の情報が与えられたとき、各木陰が読書に適している(つまり、工事現場から R メートル以上離れている)かどうかを判定するプログラムを書いてください。
+
+「位置 (x, y) が工事現場から R メートル以上離れている」という条件は以下の式で表されます。
+(x-a)^2 + (y-b)^2 <= R^2
+
+<<入力>>
+1 行目には 3 つの整数 a、b、R が入力されます。
+a、b はそれぞれ工事現場の位置の x 座標、y 座標を、R は工事現場の騒音の大きさを表します。
+2 行目には木陰の数を表す整数 N が入力されます。 続く N 行には各木陰の座標を表す 2 つの整数 x_i、y_i が入力されます。
+
+    a b R　　　#工事現場のx座標,工事現場のy座標,工事現場の騒音の大きさ
+    N　　　　　#木陰の数
+    x_1 y_1　　#木陰1のx座標,木陰1のy座標
+    x_2 y_2　　#木陰2のx座標,木陰2のy座標
+    ...
+    x_N y_N　　#木陰Nのx座標,木陰Nのy座標
+
+<<出力>>
+出力は N 行からなります。 N 個の木陰それぞれに対して、その木陰が読書に適している
+(つまり、工事現場から R メートル以上離れている)ならば "silent" と出力してください。
+その木陰が読書に適していないならば "noisy" と出力してください。
+
+
+*/
+<?php
+$hateNumber = getStdin();
+$roomCnt = getStdin();
+$hateFlag = 0;
+
+for ($i = 0; $i < $roomCnt; $i++)
+{
+    $roomList[] = getStdin();
+}
+
+foreach ($roomList as $i) {
+    hateCheck($i);
+}
+if ($roomCnt == $hateFlag) {
+    echo 'none', "\n";
+}
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+
+function hateCheck($roomNumber)
+{
+    global $hateNumber, $hateFlag;
+
+    if (strpos($roomNumber, $hateNumber) === FALSE) {
+        echo $roomNumber, "\n";
+    } else {
+        $hateFlag++;
+    }
+}
+
+/*
+<<問題>>
+あなたは運悪く病気にかかってしまい入院しなくてはいけなくなりました。
+しかし、嫌いな数字があり、その数字が含まれる部屋番号の病室に入ると治療がうまく行かないのでは無いかと不安になってしまいます…。
+そこで、部屋番号のどの桁にも嫌いな数字が含まれていない病室をリストアップして入院先に伝えることにしました。
+
+・1行目に嫌いな数字 n (0から9までの1桁の数字)
+・2行目に病室の総数 m
+・3行目以降に各病室の部屋番号を表す整数 r_i (1 <= i <= m)
+
+が改行区切りで与えられるので、希望する病室の部屋番号をすべて改行区切りで出力して下さい。
+もし、希望する病室が1つもない場合は"none" と出力して下さい。
+
+<<入出力例>>
+--入力--
+    4
+    5
+    101
+    204
+    301
+    401
+    501
+--出力--
+    101
+    301
+    501
+
+<<入力>>
+    n #嫌いな数字
+    m #病室の総数
+    r_1 #1個目の部屋番号
+    r_2 #2個目の部屋番号
+    ...
+    r_m #m個目の部屋番号
+
+<<出力>>
+希望する病室をそれぞれ1行に、入力された順番を崩すことなくすべて出力してください。
+もし希望する部屋が1つもなければ"none" と出力してください。
+最後は改行し、余計な文字、空行を含んではいけません。
+
+*/
+<?php
+$hateNumber = getStdin();
+$roomCnt = getStdin();
+$hateFlag = 0;
+
+for ($i = 0; $i < $roomCnt; $i++)
+{
+    $roomList[] = getStdin();
+}
+
+foreach ($roomList as $i) {
+    hateCheck($i);
+}
+
+if ($roomCnt == $hateFlag) {
+    echo 'none', "\n";
+}
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+
+function hateCheck($roomNumber)
+{
+    global $hateNumber, $hateFlag;
+
+    if (strpos($roomNumber, $hateNumber) === FALSE) {
+        echo $roomNumber, "\n";
+    } else {
+        $hateFlag++;
+    }
+}
+<?php
+$c = new C013();
+$c->execute();
+$c->output();
+
+class C013
+{
+    private $hateNum;
+    private $roomCnt;
+    private $safeRoom = array();
+
+    
+    public function __construct()
+    {
+        $this->hateNum = getStdin();
+        $this->roomCnt = getStdin();
+    }
+
+    public function execute()
+    {
+        for($i = 0; $i < $this->roomCnt; $i++) {
+            $number = getStdin();
+            if (strpos($number, $this->hateNum) === FALSE) {
+                $this->safeRoom[] = $number;
+            }
+        }
+    }
+        
+    public function output()
+    {
+        echo (count($this->safeRoom) == 0) ? ('none') : (implode("\n", $this->safeRoom)) , "\n"; 
+    }
+}
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+
+/*
+<<問題>>
+あなたは運悪く病気にかかってしまい入院しなくてはいけなくなりました。
+しかし、嫌いな数字があり、その数字が含まれる部屋番号の病室に入ると治療がうまく行かないのでは無いかと不安になってしまいます…。
+そこで、部屋番号のどの桁にも嫌いな数字が含まれていない病室をリストアップして入院先に伝えることにしました。
+
+・1行目に嫌いな数字 n (0から9までの1桁の数字)
+・2行目に病室の総数 m
+・3行目以降に各病室の部屋番号を表す整数 r_i (1 <= i <= m)
+
+が改行区切りで与えられるので、希望する病室の部屋番号をすべて改行区切りで出力して下さい。
+もし、希望する病室が1つもない場合は"none" と出力して下さい。
+
+<<入出力例>>
+--入力--
+    4
+    5
+    101
+    204
+    301
+    401
+    501
+--出力--
+    101
+    301
+    501
+
+<<入力>>
+    n #嫌いな数字
+    m #病室の総数
+    r_1 #1個目の部屋番号
+    r_2 #2個目の部屋番号
+    ...
+    r_m #m個目の部屋番号
+
+<<出力>>
+希望する病室をそれぞれ1行に、入力された順番を崩すことなくすべて出力してください。
+もし希望する部屋が1つもなければ"none" と出力してください。
+最後は改行し、余計な文字、空行を含んではいけません。
+
+*/
+<?php
+
+$c = new C014();
+$c->execute();
+$c->output();
+
+class C014
+{
+    private $n;
+    private $r;
+    private $dia;
+    private $ans = array();
+
+    public function __construct()
+    {
+        list($this->n, $this->r) = explode(' ',getStdin());
+        $this->dia = 2 * $this->r;
+    }
+
+    public function execute()
+    {
+        for($i = 1; $i <= $this->n; $i++) {
+            list($h, $w, $d) = explode(' ', getStdin());
+            if ($this->dia <= $h && $this->dia <= $w && $this->dia <=$d) {
+                $this->ans[] = $i;
+            }
+        }
+    }
+
+    public function output()
+    {
+        echo implode("\n", $this->ans) . "\n";
+    }
+}
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+    
+
+/*
+<<問題>>
+半径r のお気に入りのボールを手に入れたあなたは、それを収納することができる箱を探しています。
+今、n 個の箱があり、i (1 ≦ i ≦ n) 番目の箱は高さh_i、幅w_i、奥行きd_i です。各
+箱においてボールの直径が、箱の高さ、幅、奥行きの3つの長さのうち最も短いもの以下であれば、無事にボールを収納することができます。
+ボールの半径と箱の情報が与えられるので、ボールを収納することができる箱の番号を昇順にすべて答えてください。
+
+<<入出力例>>
+--入力
+    4 2
+    6 6 6
+    4 6 4
+    6 1 1
+    4 4 4
+--出力
+    1
+    2
+    4
+
+<<入力>>
+入力は以下のフォーマットで与えられます。
+
+    n r　　　#箱の数n, ボールの半径r 表す整数
+    h_1 w_1 d_1　　　#1個目の箱の高さ、幅、奥行きを表す整数
+    h_2 w_2 d_2　　　#2個目の箱の高さ、幅、奥行きを表す整数
+    ...
+    h_n w_n d_n　　　#n個目の箱の高さ、幅、奥行きを表す整数
+
+<<出力>>
+ボールを収納することができる箱の番号を昇順にすべて、改行区切りで出力してください。
+
+最後は改行し、余計な文字、空行を含んではいけません。
+*/
+<?php
+$c = new C015();
+$c->execute();
+$c->output();
+
+class C015
+{
+    private $N;
+    private $point = 0;
+
+    public function __construct()
+    {
+        $this->N = getStdin(); 
+    }
+
+    public function execute()
+    {
+        for($i = 0; $i < $this->N; $i++) {
+            list($d, $p) = explode(' ',getStdin());
+            $this->point += $this->calPoint($d, $p);
+        }
+    }
+
+    private function calPoint($d, $p)
+    {
+        if($d == 3 || $d == 13 || $d == 23 || $d == 30 | $d == 31) {
+            return floor($p * 0.03);
+            break;
+        }
+        if($d == 5 || $d == 15 || $d == 25) {
+            return floor($p * 0.05);
+            break;
+        }
+        return floor($p * 0.01);
+    }
+
+    public function output()
+    {
+        echo $this->point, "\n";
+    }
+}
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+
+/*
+<<問題>>
+今は月末。そろそろ今月の家計簿をつけないといけません。 あなたの手元には、とあるスーパーマーケットのレシートの山があります。
+
+スーパーマーケットにはポイントカードが導入されていて、買い物をするたびに購入金額に応じたポイントがたまります。 加算されるポイントは次の 3 つのルールに従って決定されます。
+
+1. 通常は購入金額の 1 ％（小数点以下切り捨て）とする
+2. ただし、3 のつく日は購入金額の 3 ％（小数点以下切り捨て）とする
+3. ただし、5 のつく日は購入金額の 5 ％（小数点以下切り捨て）とする
+
+あなたはポイントカードに、今、何ポイントたまっているのかが気になりました。 レシートの数が多いので、手で計算するのは大変です。
+
+早速、これを計算するプログラムを書きましょう。 ただし、今月のはじめには全くポイントがたまっておらず（0 ポイント）、また、今月中ポイントは消費されなかったものとします。
+
+<<入出力例>>
+--入力
+    3
+    1 1024
+    11 2048
+    21 4196
+--出力
+    71
+
+<<入力>>
+力は以下のフォーマットで与えられます。
+
+    N　　　　#各レシートの数
+    d_1 p_1　#1枚目のレシートの日付 d_1 日, 購入金額 p_1 円
+    d_2 p_2　#2枚目のレシートの日付 d_2 日, 購入金額 p_2 円
+    ...
+    d_N p_N　#N枚目のレシートの日付 d_N 日, 購入金額 p_N 円
+
+1行目には今月分のレシートの枚数を表す整数 N が入力されます。続く N 行には各レシートの情報が入力されます。
+すなわち、d_i p_i は i 枚目のレシートが発行された日付が d_i 日であり、このときの購入金額が p_i 円であることを表します。
+
+<<出力>>
+今月末にポイントカードにたまっているポイントの値を１行に出力してください。
+
+*/
+<?php
+$c = new C015();
+$c->execute();
+$c->output();
+
+class C015
+{
+    private $N;
+    private $point = 0;
+
+    public function __construct()
+    {
+        $this->N = getStdin(); 
+    }
+
+    public function execute()
+    {
+        for($i = 0; $i < $this->N; $i++) {
+            list($d, $p) = explode(' ',getStdin());
+            $this->point += $this->calPoint($d, $p);
+        }
+    }
+
+    private function calPoint($d, $p)
+    {
+        if (strpos($d, '3') !== FALSE) {
+            return floor($p * 0.03);
+            break;
+        }
+        if (strpos($d, '5') !== FALSE) {
+            return floor($p * 0.05);
+            break;
+        }
+        return floor($p * 0.01);
+    }
+
+    public function output()
+    {
+        echo $this->point, "\n";
+    }
+}
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+
+/*
+<<問題>>
+今は月末。そろそろ今月の家計簿をつけないといけません。 あなたの手元には、とあるスーパーマーケットのレシートの山があります。
+
+スーパーマーケットにはポイントカードが導入されていて、買い物をするたびに購入金額に応じたポイントがたまります。 加算されるポイントは次の 3 つのルールに従って決定されます。
+
+1. 通常は購入金額の 1 ％（小数点以下切り捨て）とする
+2. ただし、3 のつく日は購入金額の 3 ％（小数点以下切り捨て）とする
+3. ただし、5 のつく日は購入金額の 5 ％（小数点以下切り捨て）とする
+
+あなたはポイントカードに、今、何ポイントたまっているのかが気になりました。 レシートの数が多いので、手で計算するのは大変です。
+
+早速、これを計算するプログラムを書きましょう。 ただし、今月のはじめには全くポイントがたまっておらず（0 ポイント）、また、今月中ポイントは消費されなかったものとします。
+
+<<入出力例>>
+--入力
+    3
+    1 1024
+    11 2048
+    21 4196
+--出力
+    71
+
+<<入力>>
+力は以下のフォーマットで与えられます。
+
+    N　　　　#各レシートの数
+    d_1 p_1　#1枚目のレシートの日付 d_1 日, 購入金額 p_1 円
+    d_2 p_2　#2枚目のレシートの日付 d_2 日, 購入金額 p_2 円
+    ...
+    d_N p_N　#N枚目のレシートの日付 d_N 日, 購入金額 p_N 円
+
+1行目には今月分のレシートの枚数を表す整数 N が入力されます。続く N 行には各レシートの情報が入力されます。
+すなわち、d_i p_i は i 枚目のレシートが発行された日付が d_i 日であり、このときの購入金額が p_i 円であることを表します。
+
+<<出力>>
+今月末にポイントカードにたまっているポイントの値を１行に出力してください。
+
+*/
+<?php
+    $input_lines = trim(fgets(STDIN));
+    $array = split(" ",$input_lines);
+    var_dump($array);
+
+    if($array[0] > $array[1])
+    {
+        echo $array[0],PHP_EOL;
+    }else if($array[0] < $array[1])
+    {
+        echo $array[1],PHP_EOL;
+    }else if($array[0] === $array[1])
+    {
+        echo 'eq',PHP_EOL;
+    }
+/*
+D002:数の比較
+
+問題文
+    ある正の整数aとbがスペース区切りで入力されます。
+    aとbを比較し大きい方の値を出力して下さい。aとbが同じ場合は「eq」と出力して下さい。 
+
+入力される値
+    正の整数aとbが半角スペース区切りの文字列1行で入力されます。
+    入力値最終行の末尾に改行が１つ入ります。
+
+期待する出力
+    標準出力に半角数字でaとbの値の大きい方を出力してください。aとbが同じ値の場合は半角小文字アルファベットで「eq」と出力してください。
+    最後は改行し、余計な文字、空行を含んではいけません。 
+
+条件
+    すべてのテストケースで以下の条件を満たします。
+
+    a、bは正の整数
+    0 ≦ a ≦ 1000
+    0 ≦ b ≦ 1000
+*/
+■コーディング規約的な話
+
+","の後はスペース１個あける
+×$array = split(" ",$input_lines);
+○$array = split(" ", $input_lines);
+
+ifの後も
+×if(
+○if (
+
+elseifのとき
+×}else if($array[0] < $array[1])
+○} elseif ($array[0] < $array[1])
+
+ifとかelseとかforeachのとじカッコは同じ行に書く
+○if ($array[0] > $array[1]) {
+
+変数名はキャメル型を使う
+×$input_lines
+○$inputLines
+
+■命名の話
+$array とか型の名前は変数に使わない。$string とか
+$numsとかにする
+
+■ロジック的な話
+問題の本質は『大きい方を出力する』だから
+maxって関数を使うとよい
+
+<?php
+list($a, $b) = explode(' ', trim(fgets(STDIN)));
+echo ($a == $b) ? ('eq') : (max($a, $b));
+<?php
+$inputLines = fgets(STDIN);
+
+<?php
+$a = trim(fgets(STDIN));
+for ($i = 1; $i <= 9; $i++){
+    echo ($a * $i);
+    echo ($i === 9) ? PHP_EOL : ' ';
+}
+
+/*
+<<問題>>
+ある正の整数nが入力されます。
+正の整数1から9に整数nをそれぞれを掛けた数を半角スペース区切りで出力して下さい。
+
+<<入力>>
+入力は以下のフォーマットで与えられます。
+入力値最終行の末尾に改行が１つ入ります。
+n(正の整数)
+
+<<出力>>
+正の整数nを1から9の数を掛けた数を半角スペース区切りで出力してください
+最後は改行し、余計な文字、空行を含んではいけません。 
+
+<<条件>>
+すべてのテストケースで以下の条件を満たします。
+1 ≦ n ≦ 100
+*/
+
+
+<?php
+
+$nums = array();
+
+$base = trim(fgets(STDIN));
+
+for ($i = 1; $i <= 9; $i++) {
+
+    $nums[] = $i * $base;
+
+    }
+
+    echo implode(' ', $nums)."\n";
+
+
+$base = trim(fgets(STDIN));
+
+$nums = array_map(function ($i) use ($base) {
+    return $i * $base;
+    }, range(1, 9));
+
+    echo implode(' ', $nums) . "\n";
+
+    // array_mapの挙動を理解しよね～
+<?php
+$base = trim(fgets(STDIN));
+$nums = array_map(function ($i) use ($base) {
+    return $i * $base;
+    }, range(1,9));
+var_dump($nums);
+<?php
+$count = trim(fgets(STDIN));
+$nums = array();
+for ($i = 0; $i < $count; $i++) {
+    $base = trim(fgets(STDIN));
+    $nums[] = $base;
+}
+echo 'Hello ', implode(',', $nums) , ".\n";
+/*
+<<問題>>
+半角アルファベットのみで構成された長さmの文字列s_iがn行入力されます。
+以下のような形式で
+
+    Hello [s_1],[s_2],...[s_n]. 
+
+「Hello」に文字列s_iを入力された順に「,」で結合したものを半角スペースで結合し、末尾に「.」を結合した文字列を出力するプログラムを作成してください。
+
+<<入力>>
+入力は以下のフォーマットで与えられます。
+入力値最終行の末尾に改行が１つ入ります。
+
+    n #入力される文字列の個数
+    s_1 #半角アルファベットの文字列
+    s_2
+    ...
+    s_i
+
+<<出力>>
+以下の様な形式で
+
+    Hello [s_1],[s_2],...[s_n].
+
+「Hello」に文字列s_iを入力された順に「,」で結合したものを半角スペースで結合し、末尾に「.」を結合した文字列を出力してください。 
+最後は改行し、余計な文字、空行を含んではいけません。 
+*/
+<?php
+function stdin()
+{
+    return trim(fgets(STDIN));
+}
+
+$names = array();
+$count = stdin();
+for ($i = 0; $i < $count; $i++) {
+    $names[] = stdin();
+}
+echo 'Hello ', implode(',', $names) , ".\n";
+<?php
+$nums = array();
+
+list($firstTerm, $gapTerm) = explode(' ', trim(fgets(STDIN)));
+$nums = array_map(function ($i) use ($firstTerm, $gapTerm) {
+    return $firstTerm + ($gapTerm * $i);
+}, range(0, 9));
+
+echo implode(' ', $nums), "\n";
+
+/*
+/*$nums = 
+<?php
+//D005(for) 等差数列問題
+$nums = array();
+
+list($firstTerm, $gapTerm) = explode(' ', trim(fgets(STDIN)));
+$limit = $firstTerm + ($gapTerm * 9);
+for($i = $firstTerm; $i <= $limit; $i += $gapTerm) {
+    $nums[] = $i;
+}
+
+echo implode(' ', $nums), "\n";
+<?php
+//D005(foreach) 等差数列問題
+$nums = range(0,9);
+
+list($firstTerm, $gapTerm) = explode(' ', trim(fgets(STDIN)));
+
+foreach ($nums as $i) {
+    $nums[$i] = $firstTerm + ($gapTerm * $i);
+}
+
+echo implode(' ', $nums), "\n";
+<?php
+list($scaler, $unit) = explode(' ', trim(fgets(STDIN)));
+//[km,m,cm]で入力された標準出力を[mm]で出力する
+switch($unit) {
+    case 'km':
+        echo $scaler * 1000000, "\n";
+        break;
+    case 'm':
+        echo $scaler * 1000, "\n";
+        break;
+    case 'cm':
+        echo $scaler * 10, "\n";
+        break;
+}
+
+/*
+<<問題>>
+距離 n とその単位 s がスペース区切りで与えられるので、すべての距離をmmに換算し出力してください。
+
+<<入力>>
+入力は以下のフォーマットで、距離 n と単位 s が半角スペース区切りで入力されます。
+入力値最終行の末尾に改行が１つ入ります。
+
+<<出力>>
+n を 単位 s から「mm」に換算し数字のみ出力して下さい。
+最後は改行し、余計な文字、空行を含んではいけません。
+
+*/
+<?php
+list($scaler, $unit) = explode(' ', trim(fgets(STDIN)));
+
+$distanceList = array(
+    'km' => 1000000,
+    'm' => 1000,
+    'cm' => 10,
+);
+
+echo ($scaler * $distanceList["$unit"]);
+<?php
+$count = trim(fgets(STDIN));
+for ($i = 0; $i < $count; $i++) {
+    echo '*';
+}
+<?php
+$inputNum = ((trim(fgets(STDIN));
+echo ((($inputNum) % 2 !== 0) ? 'odd' : 'even') , "\n";
+
+/*
+<<問題>>
+正の整数 N が入力されるので、N が奇数ならば"odd" 偶数ならば"even" と出力するプログラムを作成して下さい。
+
+<<入力>>
+入力は以下のフォーマットで、正の整数N が入力されます。
+
+入力値最終行の末尾に改行が１つ入ります。
+
+<<出力>>
+N が奇数なら"odd" 偶数なら"even" と半角英文字で出力して下さい。
+最後は改行し、余計な文字、空行を含んではいけません。
+*/
+<?php
+list($eraNum1, $eraNum2) = explode(' ', trim(fgets(STDIN)));
+//入力される値 $eraNum1 < $eraNum2
+echo sprintf('%s', $eraNum2 - $eraNum1);
+
+/*
+<<問題))
+2つの西暦 a, b が半角スペース区切りの整数で入力されます。
+a から b が何年間あるか出力してください。
+例えば
+    1990 2014
+と入力された場合
+    24
+と出力してください。 
+
+<<入力>>
+入力は以下のフォーマットで、正の整数 a, b が入力されます。
+    a b
+
+<<出力>>
+a から b が何年間あるか出力してください。
+*/
+<?php
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+
+$localName = getStdin();
+$domainName = getStdin();
+
+echo $localName . '@' . $domainName;
+
+/*
+<<問題>>
+Eメールアドレスはローカル部とドメインを「@」を繋いだ文字列で表されます。
+ローカル部を s ,ドメインを t として、それぞれ長さ n の文字列が改行区切りで入力されます。
+以下の構文に沿った文字列を出力してください。
+
+<<入力>>
+入力は以下のフォーマットで、文字列 s, t が入力されます。
+    s
+    t
+
+<<出力>>
+ローカル部とドメインから以下の構文に沿った文字列を出力してください。
+    s(ローカル部)@t(ドメイン)
+最後は改行し、余計な文字、空行を含んではいけません。 
+*/
+<?php
+echo ord(trim(fgets(STDIN))) - ord('A') + 1;
+
+/*
+<<問題>>
+ 以下のような A?Z (半角英字大文字) の中から1文字入力されます。
+     ABCDEFGHIJKLMNOPQRSTUVWXYZ
+     A を 1番目としてアルファベット順で何番目かを出力して下さい。
+ 例えば
+     C
+ のような入力の場合
+     3
+ と出力して下さい。
+
+<<入力>>
+ 入力は以下のフォーマットで入力されます。
+     s
+ s は半角英字大文字で1文字
+
+<<出力>>
+ 入力された半角英字大文字が A を1番目としてアルファベット順で何番目かを出力して下さい。
+*/
+<?php
+$inputNum = trim(fgets(STDIN));
+echo ($inputNum > 0) ? ($inputNum) : (-$inputNum);
+
+//標準関数でabsも見つけました
+//echo abs(trim(fgets(STDIN)));
+<?php
+echo getStdin();
+echo getStdin();
+echo getStdin();
+
+function getStdin()
+{
+        return trim(fgets(STDIN));
+}
+<?php
+//変数の前後に()をつけておく
+    $ipRegex1 = "[1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]";
+    $ipRegex2 = "$ipRegex1|\*|\[$ipRegex1\-$ipRegex1\]";
+    $ipRegex3 = "($ipRegex1)\.{2}($ipRegex2)\.($ipRegex2)";
+
+    preg_match_all("/$ipRegex3/", getStdin(), $matches, PREG_PATTERN_ORDER);
+    print_r($matches);
+    var_dump($matches);
+
+function getStdin()
+{
+    return trim(fgets(STDIN));
+}
+<?php
+
+class Test
+{
+    public $a,$b,$c;
+    public static $number;
+}
+
+Test::$number = 1;
+
+echo Test::$number, "\n";
+<?php
+
+echo 1;
+echo 2;
+<?php
+
+function array_zip(...$arrays) {
+    return array_merge(...array_map(NULL, ...$arrays));
+}
+
+$a = array(1, 4, 7);
+$b = array(2, 5, 8);
+$c = array(3, 6, 9);
+
+var_dump(implode(', ', array_zip($a, $b, $c)));
+
+// Output
+string(25) "1, 2, 3, 4, 5, 6, 7, 8, 9"
+
+/*
+まずarray_zipの中のarray_mapで先頭から一個ずつ抜き出して配列にした配列を作って
+[[1, 2, 3], [4, 5, 6], [7, 8, 9]]みたいにする
+それを一個ずつの配列としてarray_mergeに渡して[1, 2, 3, 4, 5, 6, 7, 8 , 9]にする 
+*/

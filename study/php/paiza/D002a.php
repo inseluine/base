@@ -1,0 +1,3 @@
+<?php
+$inputLines = fgets(STDIN);
+
